@@ -92,8 +92,8 @@ void Circle::Draw(LineRenderer* lines) const
 	if (m_velocity.x > 50.0f || m_velocity.x < -50.0f || m_velocity.y > 50.0f || m_velocity.y < -50.0f)
 	{
 		lines->DrawCircle(m_position, m_radius + 0.1f, Colour::RED);
-		lines->DrawCircle(m_position + -(m_position + m_velocity)/70, m_radius / 1.1, Colour::RED);
-		lines->DrawCircle(m_position + -(m_position + m_velocity)/40, m_radius/1.4, Colour::RED);
+		lines->DrawCircle(m_position + -(m_position + m_velocity)/70, m_radius / 1.1, Colour::ORANGE);
+		lines->DrawCircle(m_position + -(m_position + m_velocity)/40, m_radius/1.4, Colour::YELLOW);
 	}
 }
 

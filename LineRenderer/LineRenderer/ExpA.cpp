@@ -4,6 +4,7 @@
 #include "imgui.h"
 
 #include <iostream>
+#include <time.h>
 
 typedef bool(*fn)(PhysObject*, PhysObject*);
 
@@ -19,6 +20,7 @@ GolfPhysScene::GolfPhysScene()
 	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
 	TimeStep = 0.01f;
 	Gravity = 1.0f;
+	srand(time(NULL));
 }
 
 GolfPhysScene::~GolfPhysScene()
@@ -236,7 +238,7 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 		float seperation = distance - circle->getRadius() - 0.5f;
 		if (seperation < 0.0f)
 		{
-			ScoreGoal(hole, circle);
+			//ScoreGoal(hole, circle);
 			return true;
 		}
 
