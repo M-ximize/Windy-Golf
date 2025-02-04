@@ -1,0 +1,282 @@
+#include "ExpA.h"
+#include "LineRenderer.h"
+#include "TextStream.h"
+#include "imgui.h"
+
+#include <iostream>
+
+typedef bool(*fn)(PhysObject*, PhysObject*);
+
+static fn collisionFunctionArray[] =
+{
+	GolfPhysScene::planeToPlane, GolfPhysScene::planeToCircle, GolfPhysScene::planeToHole,
+	GolfPhysScene::circleToPlane, GolfPhysScene::circleToCircle, GolfPhysScene::circleToHole,
+	GolfPhysScene::holeToPlane,GolfPhysScene::holeToCircle,GolfPhysScene::holeToHole
+};
+
+GolfPhysScene::GolfPhysScene()
+{
+	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
+	TimeStep = 0.01f;
+	Gravity = 1.0f;
+}
+
+GolfPhysScene::~GolfPhysScene()
+{
+	for (auto PhysActor : PhysActors)
+	{
+		delete PhysActor;
+	}
+}
+
+void GolfPhysScene::Initialise()
+{
+	// Creates hole and zooms out grid
+	CreateGoal();
+	ScaleCameraHeight(5.1f);
+	GameMap.LoadFromImage("GolfMapA.png");
+
+	Plane* southWall;
+	southWall = new Plane({ 0, 1 }, -25, WallBounce);
+	addActor(southWall);
+
+	Plane* northWall;
+	northWall = new Plane({ 0, -1 }, -25, WallBounce);
+	addActor(northWall);
+
+	Plane* eastWall;
+	eastWall = new Plane({ 1, 0 }, -25, WallBounce);
+	addActor(eastWall);
+
+	Plane* westWall;
+	westWall = new Plane({ -1, 0 }, -25, WallBounce);
+	addActor(westWall);
+}
+
+void GolfPhysScene::addActor(PhysObject* actor)
+{
+	PhysActors.push_back(actor);
+}
+
+void GolfPhysScene::removeActor(PhysObject* actor)
+{
+	int actorCount = PhysActors.size();
+	for (int i = 0; i < actorCount - 1; i++)
+	{
+		if (PhysActors[i] == actor)
+		{
+			PhysActors.erase(PhysActors.begin() + i);
+			delete actor;
+			return;
+		}
+	}
+}
+
+void GolfPhysScene::Update(float delta)
+{
+	static float accumaltedTime = 0.0f;
+	accumaltedTime += delta;
+
+	while (accumaltedTime >= TimeStep)
+	{
+		for (auto physActor : PhysActors)
+		{
+			physActor->fixedUpdate(WindSpeed, Gravity, TimeStep); // Wind force, Gravity force, Timestep
+		}
+		accumaltedTime -= TimeStep;
+
+		int actorCount = PhysActors.size();
+
+		// Iterate through all physics actors, check and resolve any collisions.
+		for (int outer = 0; outer < actorCount - 1; outer++)
+		{
+			for (int inner = outer + 1; inner < actorCount; inner++)
+			{
+				PhysObject* actorA = PhysActors[outer];
+				PhysObject* actorB = PhysActors[inner];
+				int actorAID = actorA->getShapeType();
+				int actorBID = actorB->getShapeType();
+
+				int functionIdx = (actorAID * 3) + actorBID;
+				fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
+				if (collisionFunctionPtr != nullptr)
+				{
+					collisionFunctionPtr(actorA, actorB);
+				}
+			}
+		}
+	}
+	
+	// Drawing
+	draw();
+
+	lines->DrawText("WIND:", { 30, 6 }, 2.0f, Colour::GREEN);
+	lines->DrawText("+", { 31,-8 }, 10);
+	lines->DrawLineWithArrow({ 36,0 }, ((WindSpeed / (MaxWindForce/10)) + Vec2{ 36, 0 }), Colour::GREEN, 1.0f);
+
+	TextStream Title(lines, Vec2{ -45.0f, 18.0f }, 4.0f);
+	Title << "Windy\nGolf";
+	TextStream Controls(lines, Vec2{ -45.0f, 6.0f }, 1.0f);
+	Controls << "Left mouse:\nLaunch golf ball\nRight mouse:\nLaunch cannon ball";
+	TextStream Score(lines, Vec2{ -45.0f, -4.0f }, 1.0f);
+	Score << "Balls shot: " << BallCount << "\nBalls sunk:" << GoalCount;
+
+
+	// Aiming visual
+	if (leftMouseDown || rightMouseDown && ShotReady == true)
+	{
+		lines->DrawLineWithArrow(cursorPos, { 0,0 });
+	}
+}
+
+void GolfPhysScene::draw()
+{
+	for (auto PhysActor : PhysActors)
+	{
+		PhysActor->Draw(lines);
+	}
+}
+
+// Shoot ball
+void GolfPhysScene::OnLeftRelease()
+{
+	if (ShotReady == true)
+	{
+		Circle* newBall;
+		newBall = new Circle({ 0,0 }, (-cursorPos * 2), 10, 0.5f, 1.0f, Colour::WHITE);
+		addActor(newBall);
+		BallCount++;
+	}
+}
+
+void GolfPhysScene::OnRightRelease()
+{
+	if (ShotReady == true)
+	{
+		Circle* newBall;
+		newBall = new Circle({ 0,0 }, (-cursorPos * 2), 50, 0.8f, 0.7f, Colour::GREY);
+		addActor(newBall);
+		BallCount++;
+	}
+}
+
+void GolfPhysScene::OnMiddleClick()
+{
+	CreateGoal();
+}
+
+// Shape Collisions
+
+bool GolfPhysScene::circleToCircle(PhysObject* actorA, PhysObject* actorB)
+{
+	Circle* circleA = dynamic_cast<Circle*>(actorA);
+	Circle* circleB = dynamic_cast<Circle*>(actorB);
+	if (circleA != nullptr && circleB != nullptr)
+	{
+		Vec2 centreDisplacement = circleB->getPosition() - circleA->getPosition();
+		float distance = centreDisplacement.GetMagnitude();
+		float seperation = distance - circleA->getRadius() - circleB->getRadius();
+		if (seperation < 0.0f)
+		{
+			circleA->resolveCollision(circleB, 0.5f * (circleA->getPosition() + circleB->getPosition()));
+		}
+
+		return true;
+	}
+	return false;
+}
+
+bool GolfPhysScene::planeToPlane(PhysObject* actorA, PhysObject* actorB)
+{
+	return false;
+}
+
+bool GolfPhysScene::circleToPlane(PhysObject* actorA, PhysObject* actorB)
+{
+	Circle* circle = dynamic_cast<Circle*>(actorA);
+	Plane* plane = dynamic_cast<Plane*>(actorB);
+	if (circle != nullptr && plane != nullptr)
+	{
+		float circleToPlane = Dot(circle->getPosition(), plane->getNormal()) - plane->getDistance();
+		float intersection = circle->getRadius() - circleToPlane;
+		float velocityOutOfPlane = Dot(circle->getVelocity(), plane->getNormal());
+		if (intersection > 0 && velocityOutOfPlane < 0)
+		{
+			plane->resolveCollision(circle, (circle->getPosition()+(plane->getNormal()*-circle->getRadius())));
+			return true;
+		}
+
+	}
+	return false;
+}
+
+bool GolfPhysScene::planeToCircle(PhysObject* actorA, PhysObject* actorB)
+{
+	return circleToPlane(actorB, actorA);
+}
+
+bool GolfPhysScene::holeToHole(PhysObject* actorA, PhysObject* actorB)
+{
+	return false;
+}
+
+bool GolfPhysScene::holeToCircle(PhysObject* actorA, PhysObject* actorB)
+{
+	return circleToHole(actorB, actorA);
+}
+
+bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
+{
+	Circle* circle = dynamic_cast<Circle*>(actorA);
+	Hole* hole = dynamic_cast<Hole*>(actorB);
+	if (circle != nullptr && hole != nullptr)
+	{
+		Vec2 centreDisplacement = hole->getPosition() - circle->getPosition();
+		float distance = centreDisplacement.GetMagnitude();
+		float seperation = distance - circle->getRadius() - 0.5f;
+		if (seperation < 0.0f)
+		{
+			ScoreGoal(hole, circle);
+			return true;
+		}
+
+	}
+	return false;
+}
+
+bool GolfPhysScene::holeToPlane(PhysObject* actorA, PhysObject* actorB)
+{
+	return false;
+}
+
+bool GolfPhysScene::planeToHole(PhysObject* actorA, PhysObject* actorB)
+{
+	return false;
+}
+
+void GolfPhysScene::CreateGoal()
+{
+	// Set a "random" wind speed
+	float windX = (rand() % MaxWindForce) - MaxWindForce / 2;
+	float windY = (rand() % MaxWindForce) - MaxWindForce / 2;
+	WindSpeed = { windX, windY };
+
+	float goalX = (rand() % 49) - 24;
+	float goalY = (rand() % 49) - 24;
+	GoalPos = {goalX, goalY};
+
+	Hole* goalHole;
+	goalHole = new Hole(GoalPos);
+	addActor(goalHole);
+}
+
+bool GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
+{
+	removeActor(Hole);
+	removeActor(Ball);
+	CreateGoal();
+	GoalCount++;
+	InPlay = false;
+	return true;
+}
+

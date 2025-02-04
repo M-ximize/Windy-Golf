@@ -1,0 +1,13 @@
+#x64 is for the various binary intermediate and
+#output files that compilation produces
+x64
+
+#.vs is the folder for intellisense's cache, which
+#changes often and gets rebuilt automatically
+.vs
+
+#imgui creates an ini file if it's used, to track
+#position and size of dragged widgets. It changes
+#often so we ignore it here, but there might be
+#situations where you want to un-ignore it.
+imgui.ini
