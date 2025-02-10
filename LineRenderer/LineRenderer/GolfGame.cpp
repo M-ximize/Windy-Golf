@@ -42,7 +42,6 @@ void GolfPhysScene::Initialise()
 	// Creates hole and zooms out grid
 	CreateGoal();
 	ScaleCameraHeight(5.1f);
-	GameMap.LoadFromImage("GolfMapA.png");
 
 	Plane* southWall;
 	southWall = new Plane({ 0, 1 }, -25, WallBounce);
