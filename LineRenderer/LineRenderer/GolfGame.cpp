@@ -1,4 +1,4 @@
-#include "ExpA.h"
+#include "GolfGame.h"
 #include "LineRenderer.h"
 #include "TextStream.h"
 #include "imgui.h"
@@ -119,13 +119,13 @@ void GolfPhysScene::Update(float delta)
 	TextStream Title(lines, Vec2{ -45.0f, 18.0f }, 4.0f);
 	Title << "Windy\nGolf";
 	TextStream Controls(lines, Vec2{ -45.0f, 6.0f }, 1.0f);
-	Controls << "Left mouse:\nLaunch golf ball\nRight mouse:\nLaunch cannon ball";
+	Controls << "Left/Right mouse:\nLaunch golf ball\nScroll wheel:\nSwing force: " << ClubForce ;
 	TextStream Score(lines, Vec2{ -45.0f, -4.0f }, 1.0f);
 	Score << "Balls shot: " << BallCount << "\nBalls sunk:" << GoalCount;
 
 
 	// Aiming visual
-	if (leftMouseDown || rightMouseDown && ShotReady == true)
+	if (leftMouseDown || rightMouseDown)
 	{
 		lines->DrawLineWithArrow(cursorPos, { 0,0 });
 	}
@@ -142,29 +142,43 @@ void GolfPhysScene::draw()
 // Shoot ball
 void GolfPhysScene::OnLeftRelease()
 {
-	if (ShotReady == true)
-	{
-		Circle* newBall;
-		newBall = new Circle({ 0,0 }, (-cursorPos * 2), 10, 0.5f, 1.0f, Colour::WHITE);
-		addActor(newBall);
-		BallCount++;
-	}
+	Circle* newBall;
+	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 10, 0.5f, 1.0f, Colour::WHITE);
+	addActor(newBall);
+	BallCount++;
 }
 
 void GolfPhysScene::OnRightRelease()
 {
-	if (ShotReady == true)
-	{
-		Circle* newBall;
-		newBall = new Circle({ 0,0 }, (-cursorPos * 2), 50, 0.8f, 0.7f, Colour::GREY);
-		addActor(newBall);
-		BallCount++;
-	}
+	Circle* newBall;
+	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 100, 0.9f, 0.5f, Colour::GREY);
+	addActor(newBall);
+	BallCount++;
 }
 
 void GolfPhysScene::OnMiddleClick()
 {
 	CreateGoal();
+}
+
+void GolfPhysScene::OnMouseScroll(bool positive)
+{
+	if (positive)
+	{
+		ClubForce += 0.25f;
+		if (ClubForce > 5.0f)
+		{
+			ClubForce = 5.0f;
+		}
+	}
+	else
+	{
+		ClubForce -= 0.25f;
+		if (ClubForce < 0.25f)
+		{
+			ClubForce = 0.25f;
+		}
+	}
 }
 
 // Shape Collisions
@@ -185,11 +199,6 @@ bool GolfPhysScene::circleToCircle(PhysObject* actorA, PhysObject* actorB)
 
 		return true;
 	}
-	return false;
-}
-
-bool GolfPhysScene::planeToPlane(PhysObject* actorA, PhysObject* actorB)
-{
 	return false;
 }
 
@@ -217,11 +226,6 @@ bool GolfPhysScene::planeToCircle(PhysObject* actorA, PhysObject* actorB)
 	return circleToPlane(actorB, actorA);
 }
 
-bool GolfPhysScene::holeToHole(PhysObject* actorA, PhysObject* actorB)
-{
-	return false;
-}
-
 bool GolfPhysScene::holeToCircle(PhysObject* actorA, PhysObject* actorB)
 {
 	return circleToHole(actorB, actorA);
@@ -246,16 +250,6 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 	return false;
 }
 
-bool GolfPhysScene::holeToPlane(PhysObject* actorA, PhysObject* actorB)
-{
-	return false;
-}
-
-bool GolfPhysScene::planeToHole(PhysObject* actorA, PhysObject* actorB)
-{
-	return false;
-}
-
 void GolfPhysScene::CreateGoal()
 {
 	// Set a "random" wind speed
@@ -272,13 +266,11 @@ void GolfPhysScene::CreateGoal()
 	addActor(goalHole);
 }
 
-bool GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
+void GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
 {
 	removeActor(Hole);
 	removeActor(Ball);
 	CreateGoal();
 	GoalCount++;
-	InPlay = false;
-	return true;
 }
 

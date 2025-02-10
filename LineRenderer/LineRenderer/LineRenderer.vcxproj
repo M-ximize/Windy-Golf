@@ -161,7 +161,7 @@
     <ClCompile Include="DotClicker.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="Example.cpp" />
-    <ClCompile Include="ExpA.cpp" />
+    <ClCompile Include="GolfGame.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLFWCallbacks.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -190,7 +190,7 @@
     <ClInclude Include="Colour.h" />
     <ClInclude Include="DotClicker.h" />
     <ClInclude Include="Example.h" />
-    <ClInclude Include="ExpA.h" />
+    <ClInclude Include="GolfGame.h" />
     <ClInclude Include="glad.h" />
     <ClInclude Include="GLFWCallbacks.h" />
     <ClInclude Include="Graphics.h" />

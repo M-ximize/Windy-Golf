@@ -12,10 +12,9 @@ class GolfPhysScene : public Application
 private:
 	// Player variables
 	Colour CurrentColour;
+	float ClubForce = 1.0f;
 
 	// Game variables
-	bool InPlay = false;
-	bool ShotReady = true;
 	float Threshold = 0.5f;
 	float WallBounce = 0.3f;
 	int MaxWindForce = 20;
@@ -51,20 +50,20 @@ public:
 	float getTimeStep() const { return TimeStep; }
 
 	static bool circleToCircle(PhysObject*, PhysObject*);
-	static bool planeToPlane(PhysObject*, PhysObject*);
+	static bool planeToPlane(PhysObject*, PhysObject*) { return false; }
 	static bool circleToPlane(PhysObject*, PhysObject*);
 	static bool planeToCircle(PhysObject*, PhysObject*);
-	static bool holeToHole(PhysObject*, PhysObject*);
+	static bool holeToHole(PhysObject*, PhysObject*) { return false; }
 	static bool holeToCircle(PhysObject*, PhysObject*);
 	static bool circleToHole(PhysObject*, PhysObject*);
-	static bool holeToPlane(PhysObject*, PhysObject*);
-	static bool planeToHole(PhysObject*, PhysObject*);
+	static bool holeToPlane(PhysObject*, PhysObject*) { return false; }
+	static bool planeToHole(PhysObject*, PhysObject*) { return false; }
 
 	// Game Functions
 
 	void CreateGoal();
 
-	bool ScoreGoal(PhysObject* Hole, PhysObject* Ball);
+	void ScoreGoal(PhysObject* Hole, PhysObject* Ball);
 
 	// Controls
 
@@ -73,4 +72,6 @@ public:
 	void OnRightRelease() override;
 
 	void OnMiddleClick() override;
+
+	void OnMouseScroll(bool positive) override;
 };

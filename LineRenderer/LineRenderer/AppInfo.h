@@ -20,7 +20,7 @@ struct GridInfo
 
 struct CameraControls
 {
-	bool disable = false;
+	bool disable = true;
 	float cameraSpeed = 0.8f;
 	float zoomFactor = 1.2f;
 };

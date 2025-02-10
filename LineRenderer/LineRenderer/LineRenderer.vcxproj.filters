@@ -59,7 +59,7 @@
     <ClCompile Include="TextStream.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="ExpA.cpp">
+    <ClCompile Include="GolfGame.cpp">
       <Filter>Game\Experiments</Filter>
     </ClCompile>
     <ClCompile Include="PhysActor.cpp">
@@ -151,7 +151,7 @@
     <ClInclude Include="Key.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="ExpA.h">
+    <ClInclude Include="GolfGame.h">
       <Filter>Game\Experiments</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">

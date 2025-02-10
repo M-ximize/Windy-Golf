@@ -150,10 +150,10 @@ void Hole::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 
 void Hole::Draw(LineRenderer* lines) const
 {
-	lines->AddPointToLine({ m_position.x - holeSize, m_position.y + holeSize });
-	lines->AddPointToLine({ m_position.x + holeSize, m_position.y + holeSize });
-	lines->AddPointToLine({ m_position.x + holeSize, m_position.y - holeSize });
-	lines->AddPointToLine({ m_position.x - holeSize, m_position.y - holeSize });
+	lines->AddPointToLine({ m_position.x - holeSize, m_position.y + holeSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x + holeSize, m_position.y + holeSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x + holeSize, m_position.y - holeSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x - holeSize, m_position.y - holeSize }, Colour::WHITE);
 	lines->FinishLineLoop();
 	lines->DrawCross(m_position, holeSize);
 }

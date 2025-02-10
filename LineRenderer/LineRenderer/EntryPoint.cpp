@@ -1,7 +1,7 @@
 #include "ApplicationHarness.h"
 
 //Include the necessary header file here for your game type
-#include "ExpA.h"
+#include "GolfGame.h"
 
 int main()
 {
