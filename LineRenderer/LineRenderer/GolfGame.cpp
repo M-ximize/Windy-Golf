@@ -128,7 +128,7 @@ void GolfPhysScene::Update(float delta)
 	TextStream Controls(lines, Vec2{ -45.0f, 6.0f }, 1.0f);
 	Controls << "Left/Right mouse:\nLaunch golf ball\nScroll wheel:\nSwing force: " << ClubForce ;
 	TextStream Score(lines, Vec2{ -45.0f, -4.0f }, 1.0f);
-	Score << "Balls shot: " << BallCount << "\nBalls sunk:" << GoalCount;
+	Score << "Balls shot: " << BallTotal << "\nBalls sunk: " << GoalCount <<"\nBalls in play: " << BallCount << "\n\nCombo: " << CurrentCombo << "\nBest Combo: " << TopCombo;
 
 
 	// Aiming visual
@@ -154,6 +154,8 @@ void GolfPhysScene::OnLeftRelease()
 	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 10, 0.5f, 1.0f, Colour::WHITE);
 	addActor(newBall);
 	BallCount++;
+	BallTotal++;
+	CurrentCombo = 0;
 }
 
 void GolfPhysScene::OnRightRelease()
@@ -162,6 +164,8 @@ void GolfPhysScene::OnRightRelease()
 	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 100, 0.9f, 0.5f, Colour::GREY);
 	addActor(newBall);
 	BallCount++;
+	BallTotal++;
+	CurrentCombo = 0;
 }
 
 void GolfPhysScene::OnMiddleClick()
@@ -283,5 +287,11 @@ void GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
 	removeActor(Ball);
 	CreateGoal();
 	GoalCount++;
+	BallCount--;
+	CurrentCombo++;
+	if (CurrentCombo > TopCombo)
+	{
+		TopCombo = CurrentCombo;
+	}
 }
 

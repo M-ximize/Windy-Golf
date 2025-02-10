@@ -13,13 +13,16 @@ private:
 	// Player variables
 	Colour CurrentColour;
 	float ClubForce = 1.0f;
+	int GoalCount = 0;
+	int BallCount = 0;
+	int BallTotal = 0;
+	int CurrentCombo = 0;
+	int TopCombo = 0;
 
 	// Game variables
 	float Threshold = 0.5f;
 	float WallBounce = 0.3f;
 	int MaxWindForce = 20;
-	int GoalCount = 0;
-	int BallCount = 0;
 	Vec2 GoalPos;
 	Vec2 WindSpeed;
 	float Gravity;
