@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <functional>
 
 typedef bool(*fn)(PhysObject*, PhysObject*);
 
@@ -127,7 +128,8 @@ void GolfPhysScene::Update(float delta)
 	// Aiming visual
 	if (leftMouseDown || rightMouseDown)
 	{
-		lines->DrawLineWithArrow(cursorPos, { 0,0 });
+		lines->DrawLineSegment(cursorPos, { 0,0 }, Colour::GREY.Multiply(0.5f));
+		lines->DrawLineWithArrow({0,0}, ( - cursorPos/5)*ClubForce);
 	}
 }
 
@@ -242,10 +244,10 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 		float seperation = distance - circle->getRadius() - 0.5f;
 		if (seperation < 0.0f)
 		{
+			circle->applyForce({ 2000,2000 }, { 0,0 });
 			//ScoreGoal(hole, circle);
 			return true;
 		}
-
 	}
 	return false;
 }
@@ -253,8 +255,8 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 void GolfPhysScene::CreateGoal()
 {
 	// Set a "random" wind speed
-	float windX = (rand() % MaxWindForce) - MaxWindForce / 2;
-	float windY = (rand() % MaxWindForce) - MaxWindForce / 2;
+	float windX = (rand() % MaxWindForce) - MaxWindForce / 2.0f;
+	float windY = (rand() % MaxWindForce) - MaxWindForce / 2.0f;
 	WindSpeed = { windX, windY };
 
 	float goalX = (rand() % 49) - 24;
