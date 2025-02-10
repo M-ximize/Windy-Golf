@@ -28,6 +28,9 @@ public:
 	virtual ShapeType getShapeType() { return shapeType; }
 
 	float getElasticity() { return m_elasticity; }
+	bool getDebug() { return debug; }
+
+	bool debug;
 
 protected:
 	ShapeType shapeType;
@@ -52,7 +55,6 @@ public:
 	float getAngularVelocity() const { return m_angularVelocity; }
 	float getMass() const { return m_mass; }
 	float getMoment() const { return m_moment; }
-	float getHeight() const { return m_height; }
 
 protected:
 	Vec2 m_position;
@@ -63,7 +65,6 @@ protected:
 	float m_moment;
 	float m_linearDrag = 0.5f;
 	float m_angularDrag = 0.5f;
-	float m_height;
 };
 
 class Plane : public PhysObject
@@ -120,6 +121,5 @@ public:
 
 protected:
 	float m_radius;
-	float maxHeight;
 	Colour m_colour;
 };

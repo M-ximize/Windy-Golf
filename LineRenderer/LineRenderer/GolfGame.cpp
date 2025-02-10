@@ -167,9 +167,26 @@ void GolfPhysScene::OnRightRelease()
 	CurrentCombo = 0;
 }
 
-void GolfPhysScene::OnMiddleClick()
+void GolfPhysScene::OnMiddleClick() // Testing
 {
-	CreateGoal();
+	if (DebugState == false)
+	{
+		for (auto physActor : PhysActors)
+		{
+			physActor->debug = true;
+			std::cout << physActor->getDebug() << '\n';
+		}
+		DebugState = true;
+	}
+	else
+	{
+		for (auto physActor : PhysActors)
+		{
+			physActor->debug = false;
+			std::cout << physActor->getDebug() << '\n';
+		}
+		DebugState = false;
+	}
 }
 
 void GolfPhysScene::OnMouseScroll(bool positive)

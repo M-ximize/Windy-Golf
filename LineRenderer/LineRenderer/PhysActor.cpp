@@ -10,6 +10,7 @@ Rigidbody::Rigidbody(ShapeType _shapeType, Vec2 _position, Vec2 _velocity, float
 	m_velocity = _velocity;
 	m_orientation = _orientation;
 	m_mass = _mass;
+	debug = false;
 }
 
 Rigidbody::~Rigidbody()
@@ -21,7 +22,7 @@ void Rigidbody::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 	m_velocity -= m_velocity * m_linearDrag * _timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
 
-	if (m_velocity.GetMagnitude() < 0.05f) {
+	if (m_velocity.GetMagnitude() < 0.075f) {
 		m_velocity = { 0,0 };
 	}
 	if (abs(m_angularVelocity) < 0.01f) {
@@ -85,15 +86,18 @@ Circle::~Circle()
 
 void Circle::Draw(LineRenderer* lines) const
 {
-	Vec2 end = Vec2(cos(m_orientation), sin(m_orientation));
 	lines->DrawCircle(m_position, m_radius, m_colour);
-	/*lines->DrawLineSegment(m_position, m_position + end, m_colour);*/
+
+	if (debug)
+	{
+		lines->DrawLineSegment(m_position, m_position + m_velocity, m_colour);
+	}
 
 	if (m_velocity.x > 50.0f || m_velocity.x < -50.0f || m_velocity.y > 50.0f || m_velocity.y < -50.0f)
 	{
+		lines->DrawCircle(m_position-(m_velocity/75), m_radius/1.4, Colour::YELLOW);
+		lines->DrawCircle(m_position-(m_velocity/150), m_radius / 1.1, Colour::ORANGE);
 		lines->DrawCircle(m_position, m_radius + 0.1f, Colour::RED);
-		lines->DrawCircle(m_position + -(m_position + m_velocity)/70, m_radius / 1.1, Colour::ORANGE);
-		lines->DrawCircle(m_position + -(m_position + m_velocity)/40, m_radius/1.4, Colour::YELLOW);
 	}
 }
 
