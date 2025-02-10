@@ -21,7 +21,7 @@ private:
 
 	// Game variables
 	float Threshold = 0.5f;
-	float WallBounce = 0.3f;
+	float WallBounce = 0.7f;
 	int MaxWindForce = 20;
 	bool DebugState = false;
 	Vec2 GoalPos;

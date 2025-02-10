@@ -19,10 +19,11 @@ static fn collisionFunctionArray[] =
 GolfPhysScene::GolfPhysScene()
 {
 	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
-	appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
-	appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
-	appInfo.grid.extent = 25;
-	appInfo.grid.showBasisLines = false;
+	appInfo.grid.show = false;
+	//appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	//appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	//appInfo.grid.extent = 25;
+	//appInfo.grid.showBasisLines = false;
 	TimeStep = 0.01f;
 	Gravity = 1.0f;
 	appInfo.camera.disable = true;
@@ -174,7 +175,6 @@ void GolfPhysScene::OnMiddleClick() // Testing
 		for (auto physActor : PhysActors)
 		{
 			physActor->debug = true;
-			std::cout << physActor->getDebug() << '\n';
 		}
 		DebugState = true;
 	}
@@ -183,7 +183,6 @@ void GolfPhysScene::OnMiddleClick() // Testing
 		for (auto physActor : PhysActors)
 		{
 			physActor->debug = false;
-			std::cout << physActor->getDebug() << '\n';
 		}
 		DebugState = false;
 	}

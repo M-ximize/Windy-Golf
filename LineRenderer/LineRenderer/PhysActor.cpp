@@ -22,7 +22,7 @@ void Rigidbody::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 	m_velocity -= m_velocity * m_linearDrag * _timeStep;
 	m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
 
-	if (m_velocity.GetMagnitude() < 0.075f) {
+	if (m_velocity.GetMagnitude() < 0.05f) {
 		m_velocity = { 0,0 };
 	}
 	if (abs(m_angularVelocity) < 0.01f) {
