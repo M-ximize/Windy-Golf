@@ -1,6 +1,7 @@
 #pragma once
 
 class LineRenderer;
+class GolfPhysScene;
 
 #include "Colour.h"
 #include "Maths.h"
@@ -87,7 +88,7 @@ protected:
 class Hole : public PhysObject
 {
 public:
-	Hole(Vec2 _position);
+	Hole(Vec2 _position, GolfPhysScene* _scene);
 	~Hole();
 
 	virtual void fixedUpdate(Vec2 _force, float _gravity, float _timeStep) override;
@@ -95,10 +96,12 @@ public:
 	virtual void resetPosition() override;
 
 	Vec2 getPosition() { return m_position; }
+	GolfPhysScene* getScene() { return sceneRef; }
 
 protected:
 	float holeSize = 0.65f;
 	Vec2 m_position;
+	GolfPhysScene* sceneRef;
 };
 
 

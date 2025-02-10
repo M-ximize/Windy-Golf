@@ -68,8 +68,8 @@ void GolfPhysScene::addActor(PhysObject* actor)
 
 void GolfPhysScene::removeActor(PhysObject* actor)
 {
-	int actorCount = PhysActors.size();
-	for (int i = 0; i < actorCount - 1; i++)
+	int actorCount = PhysActors.size() - 1;
+	for (int i = 0; i <= actorCount; i++)
 	{
 		if (PhysActors[i] == actor)
 		{
@@ -111,6 +111,7 @@ void GolfPhysScene::Update(float delta)
 				{
 					collisionFunctionPtr(actorA, actorB);
 				}
+				actorCount = PhysActors.size();
 			}
 		}
 	}
@@ -249,7 +250,8 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 		float seperation = distance - circle->getRadius() - 0.5f;
 		if (seperation < 0.0f)
 		{
-			//ScoreGoal(hole, circle);
+			GolfPhysScene* scene = hole->getScene();
+			scene->ScoreGoal(hole, circle);
 			return true;
 		}
 	}
@@ -270,7 +272,7 @@ void GolfPhysScene::CreateGoal()
 	
 	// Create the new goal at the random position
 	Hole* goalHole;
-	goalHole = new Hole(GoalPos);
+	goalHole = new Hole(GoalPos, this);
 	addActor(goalHole);
 }
 

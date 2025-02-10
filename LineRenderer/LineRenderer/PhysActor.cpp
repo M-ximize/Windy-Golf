@@ -139,9 +139,10 @@ void Plane::resolveCollision(Rigidbody* _otherActor, Vec2 _contact)
 
 // Hole Functions
 
-Hole::Hole(Vec2 _position) : PhysObject(ShapeType::HOLE)
+Hole::Hole(Vec2 _position, GolfPhysScene* _scene) : PhysObject(ShapeType::HOLE)
 {
 	m_position = _position;
+	sceneRef = _scene;
 }
 
 void Hole::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
