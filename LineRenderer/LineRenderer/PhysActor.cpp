@@ -20,25 +20,25 @@ Rigidbody::~Rigidbody()
 void Rigidbody::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 {
 	m_velocity -= m_velocity * m_linearDrag * _timeStep;
-	m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
+	//m_angularVelocity -= m_angularVelocity * m_angularDrag * _timeStep;
 
 	if (m_velocity.GetMagnitude() < 0.05f) {
 		m_velocity = { 0,0 };
 	}
-	if (abs(m_angularVelocity) < 0.01f) {
+	/*if (abs(m_angularVelocity) < 0.01f) {
 		m_angularVelocity = 0;
-	}
+	}*/
 
 	m_position += m_velocity * _timeStep;
 	applyForce(_force * m_mass * _timeStep, { 0,0 });
 
-	m_orientation += m_angularVelocity * _timeStep;
+	//m_orientation += m_angularVelocity * _timeStep;
 }
 
 void Rigidbody::applyForce(Vec2 _force, Vec2 _pos)
 {
 	m_velocity += _force / getMass();
-	m_angularVelocity += (_force.y * _pos.x - _force.x * _pos.y) / getMoment();
+	//m_angularVelocity += (_force.y * _pos.x - _force.x * _pos.y) / getMoment();
 }
 
 
@@ -141,28 +141,28 @@ void Plane::resolveCollision(Rigidbody* _otherActor, Vec2 _contact)
 	_otherActor->applyForce(force, _contact - _otherActor->getPosition());
 }
 
-// Hole Functions
+// GoalBox Functions
 
-Hole::Hole(Vec2 _position, GolfPhysScene* _scene) : PhysObject(ShapeType::HOLE)
+GoalBox::GoalBox(Vec2 _position, GolfPhysScene* _scene) : PhysObject(ShapeType::GOALBOX)
 {
 	m_position = _position;
 	sceneRef = _scene;
 }
 
-void Hole::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
+void GoalBox::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 {
 }
 
-void Hole::Draw(LineRenderer* lines) const
+void GoalBox::Draw(LineRenderer* lines) const
 {
-	lines->AddPointToLine({ m_position.x - holeSize, m_position.y + holeSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x + holeSize, m_position.y + holeSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x + holeSize, m_position.y - holeSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x - holeSize, m_position.y - holeSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x - GoalBoxSize, m_position.y + GoalBoxSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x + GoalBoxSize, m_position.y + GoalBoxSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x + GoalBoxSize, m_position.y - GoalBoxSize }, Colour::WHITE);
+	lines->AddPointToLine({ m_position.x - GoalBoxSize, m_position.y - GoalBoxSize }, Colour::WHITE);
 	lines->FinishLineLoop();
-	lines->DrawCross(m_position, holeSize);
+	lines->DrawCross(m_position, GoalBoxSize);
 }
 
-void Hole::resetPosition()
+void GoalBox::resetPosition()
 {
 }

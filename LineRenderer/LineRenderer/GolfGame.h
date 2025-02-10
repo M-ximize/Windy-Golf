@@ -57,17 +57,17 @@ public:
 	static bool planeToPlane(PhysObject*, PhysObject*) { return false; }
 	static bool circleToPlane(PhysObject*, PhysObject*);
 	static bool planeToCircle(PhysObject*, PhysObject*);
-	static bool holeToHole(PhysObject*, PhysObject*) { return false; }
-	static bool holeToCircle(PhysObject*, PhysObject*);
-	static bool circleToHole(PhysObject*, PhysObject*);
-	static bool holeToPlane(PhysObject*, PhysObject*) { return false; }
-	static bool planeToHole(PhysObject*, PhysObject*) { return false; }
+	static bool GoalBoxToGoalBox(PhysObject*, PhysObject*) { return false; }
+	static bool GoalBoxToCircle(PhysObject*, PhysObject*);
+	static bool circleToGoalBox(PhysObject*, PhysObject*);
+	static bool GoalBoxToPlane(PhysObject*, PhysObject*) { return false; }
+	static bool planeToGoalBox(PhysObject*, PhysObject*) { return false; }
 
 	// Game Functions
 
 	void CreateGoal();
 
-	void ScoreGoal(PhysObject* Hole, PhysObject* Ball);
+	void ScoreGoal(PhysObject* GoalBox, PhysObject* Ball);
 
 	// Controls
 

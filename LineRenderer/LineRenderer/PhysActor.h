@@ -9,7 +9,7 @@ class GolfPhysScene;
 enum ShapeType {
 	PLANE = 0,
 	CIRCLE,
-	HOLE
+	GOALBOX
 };
 
 // Base PhysObject class
@@ -86,11 +86,11 @@ protected:
 	float m_distanceToOrigin;
 };
 
-class Hole : public PhysObject
+class GoalBox : public PhysObject
 {
 public:
-	Hole(Vec2 _position, GolfPhysScene* _scene);
-	~Hole();
+	GoalBox(Vec2 _position, GolfPhysScene* _scene);
+	~GoalBox();
 
 	virtual void fixedUpdate(Vec2 _force, float _gravity, float _timeStep) override;
 	virtual void Draw(LineRenderer* lines) const override;
@@ -100,7 +100,7 @@ public:
 	GolfPhysScene* getScene() { return sceneRef; }
 
 protected:
-	float holeSize = 0.65f;
+	float GoalBoxSize = 0.65f;
 	Vec2 m_position;
 	GolfPhysScene* sceneRef;
 };

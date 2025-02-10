@@ -11,9 +11,9 @@ typedef bool(*fn)(PhysObject*, PhysObject*);
 
 static fn collisionFunctionArray[] =
 {
-	GolfPhysScene::planeToPlane, GolfPhysScene::planeToCircle, GolfPhysScene::planeToHole,
-	GolfPhysScene::circleToPlane, GolfPhysScene::circleToCircle, GolfPhysScene::circleToHole,
-	GolfPhysScene::holeToPlane,GolfPhysScene::holeToCircle,GolfPhysScene::holeToHole
+	GolfPhysScene::planeToPlane, GolfPhysScene::planeToCircle, GolfPhysScene::planeToGoalBox,
+	GolfPhysScene::circleToPlane, GolfPhysScene::circleToCircle, GolfPhysScene::circleToGoalBox,
+	GolfPhysScene::GoalBoxToPlane,GolfPhysScene::GoalBoxToCircle,GolfPhysScene::GoalBoxToGoalBox
 };
 
 GolfPhysScene::GolfPhysScene()
@@ -40,7 +40,7 @@ GolfPhysScene::~GolfPhysScene()
 
 void GolfPhysScene::Initialise()
 {
-	// Creates hole and zooms out grid
+	// Creates GoalBox and zooms out grid
 	CreateGoal();
 	ScaleCameraHeight(5.1f);
 
@@ -253,24 +253,24 @@ bool GolfPhysScene::planeToCircle(PhysObject* actorA, PhysObject* actorB)
 	return circleToPlane(actorB, actorA);
 }
 
-bool GolfPhysScene::holeToCircle(PhysObject* actorA, PhysObject* actorB)
+bool GolfPhysScene::GoalBoxToCircle(PhysObject* actorA, PhysObject* actorB)
 {
-	return circleToHole(actorB, actorA);
+	return circleToGoalBox(actorB, actorA);
 }
 
-bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
+bool GolfPhysScene::circleToGoalBox(PhysObject* actorA, PhysObject* actorB)
 {
 	Circle* circle = dynamic_cast<Circle*>(actorA);
-	Hole* hole = dynamic_cast<Hole*>(actorB);
-	if (circle != nullptr && hole != nullptr)
+	GoalBox* box = dynamic_cast<GoalBox*>(actorB);
+	if (circle != nullptr && box != nullptr)
 	{
-		Vec2 centreDisplacement = hole->getPosition() - circle->getPosition();
+		Vec2 centreDisplacement = box->getPosition() - circle->getPosition();
 		float distance = centreDisplacement.GetMagnitude();
 		float seperation = distance - circle->getRadius() - 0.5f;
 		if (seperation < 0.0f)
 		{
-			GolfPhysScene* scene = hole->getScene();
-			scene->ScoreGoal(hole, circle);
+			GolfPhysScene* scene = box->getScene();
+			scene->ScoreGoal(box, circle);
 			return true;
 		}
 	}
@@ -290,15 +290,15 @@ void GolfPhysScene::CreateGoal()
 	GoalPos = {goalX, goalY};
 	
 	// Create the new goal at the random position
-	Hole* goalHole;
-	goalHole = new Hole(GoalPos, this);
-	addActor(goalHole);
+	GoalBox* box;
+	box = new GoalBox(GoalPos, this);
+	addActor(box);
 }
 
-void GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
+void GolfPhysScene::ScoreGoal(PhysObject* box, PhysObject* Ball)
 {
-	// remove and delete the current hole and the instigating ball. Then create a new goal and add 1 to players score.
-	removeActor(Hole);
+	// remove and delete the current goal and the instigating ball. Then create a new goal and add 1 to players score.
+	removeActor(box);
 	removeActor(Ball);
 	CreateGoal();
 	GoalCount++;
