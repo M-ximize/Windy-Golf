@@ -116,7 +116,7 @@ void Plane::Draw(LineRenderer* lines) const
 	float planeLength = 25;
 	Vec2 centerPoint = m_normal * m_distanceToOrigin;
 	Vec2 parallel(m_normal.y, -m_normal.x);
-	lines->DrawLineSegment({ centerPoint + (parallel * planeLength) }, { centerPoint - (parallel * planeLength) });
+	lines->DrawLineSegment({ centerPoint + (parallel * planeLength) }, { centerPoint - (parallel * planeLength) }, Colour::GREEN.Lighten());
 }
 
 void Plane::resetPosition()

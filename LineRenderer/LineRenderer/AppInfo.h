@@ -8,11 +8,11 @@ struct GridInfo
 {
 	bool show = true;
 	Colour mainAxesColour = Colour::WHITE.Multiply(0.8f);	//The colour of the cardinal axes lines
-	Colour linesColour = Colour::WHITE.Multiply(0.3f);	//The colour of the more faded spacing lines.
+	Colour linesColour = Colour::WHITE.Multiply(0.2f);	//The colour of the more faded spacing lines.
 	unsigned int extent = 10;	//How many grid lines there are in all four directions (positive and negative).
 	float unit = 1.0f;	//How far apart grid lines are.
 
-	bool showBasisLines = true;	//The lines that show the coloured X and Y axis lines.
+	bool showBasisLines = false;	//The lines that show the coloured X and Y axis lines.
 	Colour positiveXLineColour = Colour::RED;
 	Colour positiveYLineColour = Colour::GREEN;
 	float basisLineLength = 1.0f;
@@ -20,7 +20,7 @@ struct GridInfo
 
 struct CameraControls
 {
-	bool disable = true;
+	bool disable = false;
 	float cameraSpeed = 0.8f;
 	float zoomFactor = 1.2f;
 };

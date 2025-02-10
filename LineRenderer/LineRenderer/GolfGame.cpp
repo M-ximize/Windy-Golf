@@ -19,8 +19,13 @@ static fn collisionFunctionArray[] =
 GolfPhysScene::GolfPhysScene()
 {
 	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
+	appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	appInfo.grid.extent = 25;
+	appInfo.grid.showBasisLines = false;
 	TimeStep = 0.01f;
 	Gravity = 1.0f;
+	appInfo.camera.disable = true;
 	srand(time(NULL));
 }
 
@@ -244,7 +249,6 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 		float seperation = distance - circle->getRadius() - 0.5f;
 		if (seperation < 0.0f)
 		{
-			circle->applyForce({ 2000,2000 }, { 0,0 });
 			//ScoreGoal(hole, circle);
 			return true;
 		}
@@ -254,15 +258,17 @@ bool GolfPhysScene::circleToHole(PhysObject* actorA, PhysObject* actorB)
 
 void GolfPhysScene::CreateGoal()
 {
-	// Set a "random" wind speed
+	// Set a random wind speed
 	float windX = (rand() % MaxWindForce) - MaxWindForce / 2.0f;
 	float windY = (rand() % MaxWindForce) - MaxWindForce / 2.0f;
 	WindSpeed = { windX, windY };
 
+	// Set a new random goal position
 	float goalX = (rand() % 49) - 24;
 	float goalY = (rand() % 49) - 24;
 	GoalPos = {goalX, goalY};
-
+	
+	// Create the new goal at the random position
 	Hole* goalHole;
 	goalHole = new Hole(GoalPos);
 	addActor(goalHole);
@@ -270,6 +276,7 @@ void GolfPhysScene::CreateGoal()
 
 void GolfPhysScene::ScoreGoal(PhysObject* Hole, PhysObject* Ball)
 {
+	// remove and delete the current hole and the instigating ball. Then create a new goal and add 1 to players score.
 	removeActor(Hole);
 	removeActor(Ball);
 	CreateGoal();
