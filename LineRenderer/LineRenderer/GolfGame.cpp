@@ -81,6 +81,8 @@ void GolfPhysScene::removeActor(PhysObject* actor)
 	}
 }
 
+float windDivider = 100;
+
 void GolfPhysScene::Update(float delta)
 {
 	static float accumaltedTime = 0.0f;
@@ -115,6 +117,17 @@ void GolfPhysScene::Update(float delta)
 				actorCount = PhysActors.size();
 			}
 		}
+		float windX = (rand() % (MaxWindForce + 1)) - (MaxWindForce / 2.0f);
+		if (WindSpeed.x + windX/ windDivider > MaxWindForce / 2 || WindSpeed.x + windX/ windDivider < -MaxWindForce / 2)
+		{
+			windX = 0;
+		}
+		float windY = (rand() % (MaxWindForce + 1)) - (MaxWindForce / 2.0f);
+		if (WindSpeed.y + windY/ windDivider > MaxWindForce / 2 || WindSpeed.y + windY/ windDivider < -MaxWindForce / 2)
+		{
+			windY = 0;
+		}
+		WindSpeed = { WindSpeed.x + (windX / windDivider), WindSpeed.y + (windY / windDivider) };
 	}
 	
 	// Drawing
@@ -339,7 +352,6 @@ void GolfPhysScene::CreateGoal()
 	float goalX = ((rand() % 490) - 240) / static_cast<float>(10);
 	float goalY = ((rand() % 490) - 240) / static_cast<float>(10);
 	GoalPos = {goalX, goalY};
-	std::cout << goalX << " " << goalY << '\n';
 	
 	// Create the new goal at the random position
 	GoalBox* box;
