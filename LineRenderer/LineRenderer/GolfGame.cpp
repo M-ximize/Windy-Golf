@@ -16,9 +16,13 @@ static fn collisionFunctionArray[] =
 	GolfPhysScene::GoalBoxToPlane,GolfPhysScene::GoalBoxToCircle,GolfPhysScene::GoalBoxToGoalBox
 };
 
+
 GolfPhysScene::GolfPhysScene()
 {
-	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
+	srand(time(NULL)); // Random seed
+
+	int randomTitle = rand() % GameTitles.size();
+	appInfo.appName = GameTitles[randomTitle];
 	appInfo.grid.show = true;
 	appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
 	appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
@@ -28,7 +32,7 @@ GolfPhysScene::GolfPhysScene()
 	TimeStep = 0.01f;
 	Gravity = 1.0f;
 	appInfo.camera.disable = true;
-	srand(time(NULL));
+	
 }
 
 GolfPhysScene::~GolfPhysScene()
@@ -81,7 +85,7 @@ void GolfPhysScene::removeActor(PhysObject* actor)
 	}
 }
 
-float windDivider = 100;
+
 
 void GolfPhysScene::Update(float delta)
 {

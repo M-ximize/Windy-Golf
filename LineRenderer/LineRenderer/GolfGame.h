@@ -11,32 +11,38 @@ class GolfPhysScene : public Application
 {
 private:
 	// Player variables
-	Colour CurrentColour;
 	float ClubForce = 1.0f;
+
+	int CurrentCombo = 0; // All handled in runtime, keep at 0.
+	int TopCombo = 0;
 	int GoalCount = 0;
 	int BallCount = 0;
 	int BallTotal = 0;
-	int CurrentCombo = 0;
-	int TopCombo = 0;
 
-	int selectBall = 0;
+	int selectBall = 0; // Currently selected ball, will reset to 0 if out of range.
 	float selectMass = 10.0f;
 	float selectRadius = 0.5f;
 	float selectElastic = 1.0f;
 	Colour selectColour = Colour::WHITE;
 
 	// Game variables
-	float Threshold = 0.5f;
-	float WallBounce = 0.7f;
-	int MaxWindForce = 20;
-	bool DebugState = false;
+	float WallBounce = 0.7f; // Elasticity of map bounds
+	int MaxWindForce = 20; // Max possible acceleration of wind
+	float windDivider = 100; // For wind updates
+	bool DebugState = false; // Toggle accel display on balls
 	Vec2 GoalPos;
 	Vec2 WindSpeed;
 	float Gravity;
 	float TimeStep;
 	std::vector<PhysObject*> PhysActors;
 
-	Grid GameMap;
+	std::vector<const char*> GameTitles = {
+		"Windy Golf: EZ-BREEZY Edition", 
+		"Windy Golf: Hurricane Season", 
+		"Windy Golf: 1998 Championship Edition", 
+		"Windy Golf: The ultimate game of golf with strong winds",
+		"Windy Golf: Secret developer version"
+	};
 
 public:
 	GolfPhysScene();
