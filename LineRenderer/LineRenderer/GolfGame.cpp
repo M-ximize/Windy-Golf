@@ -19,11 +19,12 @@ static fn collisionFunctionArray[] =
 GolfPhysScene::GolfPhysScene()
 {
 	appInfo.appName = "Windy Golf: EZ-BREEZY Edition";
-	appInfo.grid.show = false;
-	//appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
-	//appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
-	//appInfo.grid.extent = 25;
-	//appInfo.grid.showBasisLines = false;
+	appInfo.grid.show = true;
+	appInfo.grid.mainAxesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	appInfo.grid.linesColour = Colour::GREEN.Lighten().Multiply(0.2f);
+	appInfo.grid.extent = 5;
+	appInfo.grid.unit = 5;
+	appInfo.grid.showBasisLines = false;
 	TimeStep = 0.01f;
 	Gravity = 1.0f;
 	appInfo.camera.disable = true;
@@ -129,9 +130,9 @@ void GolfPhysScene::Update(float delta)
 	Controls << "Left mouse:\nLaunch golf ball\nRight mouse:\nChange ball\nScroll wheel:\nSwing force: " << ClubForce ;
 	TextStream Score(lines, Vec2{ -45.0f, -10.0f }, 1.0f);
 	Score << "Balls shot: " << BallTotal << "\nBalls sunk: " << GoalCount <<"\nBalls in play: " << BallCount << "\n\nCombo: " << CurrentCombo << "\nBest Combo: " << TopCombo;
+	lines->DrawCircle({ 35, -3 }, selectRadius, selectColour);
 	TextStream BallSelect(lines, { 28, 0 }, 1.0f);
 	BallSelect << "Selected Ball:\n\n\n\Size: "<<selectRadius<<"\nMass: "<<selectMass<<"\nBounce: "<<selectElastic;
-	lines->DrawCircle({ 35, -3 }, selectRadius, selectColour);
 
 
 	// Aiming visual
@@ -177,7 +178,7 @@ void GolfPhysScene::OnRightClick() // Cycle Ball types
 		case 2: // Bouncy Ball
 		{
 			selectMass = 1.0f;
-			selectRadius = 0.25f;
+			selectRadius = 0.35f;
 			selectElastic = 1.2f;
 			selectColour = Colour::RED.Lighten();
 			break;
@@ -193,7 +194,7 @@ void GolfPhysScene::OnRightClick() // Cycle Ball types
 		case 4: // Unbouncy Ball
 		{
 			selectMass = 0.01f;
-			selectRadius = 0.25f;
+			selectRadius = 0.3f;
 			selectElastic = -0.7f;
 			selectColour = Colour::MAGENTA;
 			break;
@@ -335,9 +336,10 @@ void GolfPhysScene::CreateGoal()
 	WindSpeed = { windX, windY };
 
 	// Set a new random goal position
-	float goalX = (rand() % 49) - 24;
-	float goalY = (rand() % 49) - 24;
+	float goalX = ((rand() % 490) - 240) / static_cast<float>(10);
+	float goalY = ((rand() % 490) - 240) / static_cast<float>(10);
 	GoalPos = {goalX, goalY};
+	std::cout << goalX << " " << goalY << '\n';
 	
 	// Create the new goal at the random position
 	GoalBox* box;
