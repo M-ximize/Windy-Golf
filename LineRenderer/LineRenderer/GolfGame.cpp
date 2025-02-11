@@ -119,20 +119,23 @@ void GolfPhysScene::Update(float delta)
 	// Drawing
 	draw();
 
-	lines->DrawText("WIND:", { 30, 6 }, 2.0f, Colour::GREEN);
-	lines->DrawText("+", { 31,-8 }, 10);
-	lines->DrawLineWithArrow({ 36,0 }, ((WindSpeed / (MaxWindForce/10)) + Vec2{ 36, 0 }), Colour::GREEN, 1.0f);
+	lines->DrawText("WIND:", { 30, 16 }, 2.0f, Colour::GREEN);
+	lines->DrawText("+", { 31,2 }, 10);
+	lines->DrawLineWithArrow({ 36,10 }, ((WindSpeed / (MaxWindForce/10)) + Vec2{ 36, 10 }), Colour::GREEN, 1.0f);
 
 	TextStream Title(lines, Vec2{ -45.0f, 18.0f }, 4.0f);
 	Title << "Windy\nGolf";
 	TextStream Controls(lines, Vec2{ -45.0f, 6.0f }, 1.0f);
-	Controls << "Left/Right mouse:\nLaunch golf ball\nScroll wheel:\nSwing force: " << ClubForce ;
-	TextStream Score(lines, Vec2{ -45.0f, -4.0f }, 1.0f);
+	Controls << "Left mouse:\nLaunch golf ball\nRight mouse:\nChange ball\nScroll wheel:\nSwing force: " << ClubForce ;
+	TextStream Score(lines, Vec2{ -45.0f, -10.0f }, 1.0f);
 	Score << "Balls shot: " << BallTotal << "\nBalls sunk: " << GoalCount <<"\nBalls in play: " << BallCount << "\n\nCombo: " << CurrentCombo << "\nBest Combo: " << TopCombo;
+	TextStream BallSelect(lines, { 28, 0 }, 1.0f);
+	BallSelect << "Selected Ball:\n\n\n\Size: "<<selectRadius<<"\nMass: "<<selectMass<<"\nBounce: "<<selectElastic;
+	lines->DrawCircle({ 35, -3 }, selectRadius, selectColour);
 
 
 	// Aiming visual
-	if (leftMouseDown || rightMouseDown)
+	if (leftMouseDown)
 	{
 		lines->DrawLineSegment(cursorPos, { 0,0 }, Colour::GREY.Multiply(0.5f));
 		lines->DrawLineWithArrow({0,0}, ( - cursorPos/5)*ClubForce);
@@ -151,21 +154,68 @@ void GolfPhysScene::draw()
 void GolfPhysScene::OnLeftRelease()
 {
 	Circle* newBall;
-	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 10, 0.5f, 1.0f, Colour::WHITE);
+	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), selectMass, selectRadius, selectElastic, selectColour);
 	addActor(newBall);
 	BallCount++;
 	BallTotal++;
 	CurrentCombo = 0;
 }
 
-void GolfPhysScene::OnRightRelease()
+void GolfPhysScene::OnRightClick() // Cycle Ball types
 {
-	Circle* newBall;
-	newBall = new Circle({ 0,0 }, (-cursorPos * ClubForce), 100, 0.9f, 0.5f, Colour::GREY);
-	addActor(newBall);
-	BallCount++;
-	BallTotal++;
-	CurrentCombo = 0;
+	selectBall++;
+	switch (selectBall)
+	{
+		case 1: // Cannon Ball
+		{
+			selectMass = 100.0f;
+			selectRadius = 1.0f;
+			selectElastic = 0.5f;
+			selectColour = Colour::GREY;
+			break;
+		}
+		case 2: // Bouncy Ball
+		{
+			selectMass = 1.0f;
+			selectRadius = 0.25f;
+			selectElastic = 1.2f;
+			selectColour = Colour::RED.Lighten();
+			break;
+		}
+		case 3: // Super Bouncy Ball
+		{
+			selectMass = 1.0f;
+			selectRadius = 0.25f;
+			selectElastic = 1.5f;
+			selectColour = Colour::BLUE.Lighten();
+			break;
+		}
+		case 4: // Unbouncy Ball
+		{
+			selectMass = 0.01f;
+			selectRadius = 0.25f;
+			selectElastic = -0.7f;
+			selectColour = Colour::MAGENTA;
+			break;
+		}
+		case 5: // Random Ball
+		{
+			selectMass = rand() % 100;
+			selectRadius = 0.05f + (rand() % 100) / static_cast<float>(50);
+			selectElastic = (rand() % 100) / static_cast<float>(100);
+			selectColour = Colour::YELLOW;
+			break;
+		}
+		default: // Golf Ball
+		{
+			selectMass = 10.0f;
+			selectRadius = 0.5f;
+			selectElastic = 1.0f;
+			selectColour = Colour::WHITE;
+			selectBall = 0;
+			break;
+		}
+	}
 }
 
 void GolfPhysScene::OnMiddleClick() // Testing

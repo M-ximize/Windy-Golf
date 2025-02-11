@@ -19,6 +19,12 @@ private:
 	int CurrentCombo = 0;
 	int TopCombo = 0;
 
+	int selectBall = 0;
+	float selectMass = 10.0f;
+	float selectRadius = 0.5f;
+	float selectElastic = 1.0f;
+	Colour selectColour = Colour::WHITE;
+
 	// Game variables
 	float Threshold = 0.5f;
 	float WallBounce = 0.7f;
@@ -73,7 +79,7 @@ public:
 
 	void OnLeftRelease() override;
 
-	void OnRightRelease() override;
+	void OnRightClick() override;
 
 	void OnMiddleClick() override;
 
