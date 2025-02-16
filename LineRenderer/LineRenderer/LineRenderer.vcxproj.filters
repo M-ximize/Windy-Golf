@@ -41,12 +41,6 @@
       <Filter>ThirdParty\imgui</Filter>
     </ClCompile>
     <ClCompile Include="EntryPoint.cpp" />
-    <ClCompile Include="Example.cpp">
-      <Filter>Game\Examples</Filter>
-    </ClCompile>
-    <ClCompile Include="DotClicker.cpp">
-      <Filter>Game\Examples</Filter>
-    </ClCompile>
     <ClCompile Include="Vec2.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -127,12 +121,6 @@
     <ClInclude Include="..\imgui\imstb_truetype.h">
       <Filter>ThirdParty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Example.h">
-      <Filter>Game\Examples</Filter>
-    </ClInclude>
-    <ClInclude Include="DotClicker.h">
-      <Filter>Game\Examples</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -179,9 +167,6 @@
     </Filter>
     <Filter Include="ThirdParty\imgui">
       <UniqueIdentifier>{af08b8df-298e-486a-bd88-f49c10c0050b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Examples">
-      <UniqueIdentifier>{777b1260-7118-49ab-b296-237fdabebca0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Experiments">
       <UniqueIdentifier>{a52d1c62-720e-4e41-b667-d4e5517a49d9}</UniqueIdentifier>

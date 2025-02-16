@@ -158,9 +158,7 @@
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Colour.cpp" />
-    <ClCompile Include="DotClicker.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
-    <ClCompile Include="Example.cpp" />
     <ClCompile Include="GolfGame.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GLFWCallbacks.cpp" />
@@ -188,8 +186,6 @@
     <ClInclude Include="AppInfo.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Colour.h" />
-    <ClInclude Include="DotClicker.h" />
-    <ClInclude Include="Example.h" />
     <ClInclude Include="GolfGame.h" />
     <ClInclude Include="glad.h" />
     <ClInclude Include="GLFWCallbacks.h" />

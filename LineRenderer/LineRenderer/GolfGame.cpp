@@ -19,7 +19,7 @@ static fn collisionFunctionArray[] =
 
 GolfPhysScene::GolfPhysScene()
 {
-	srand(time(NULL)); // Random seed
+	srand((unsigned int)time(NULL)); // Random seed
 
 	int randomTitle = rand() % GameTitles.size();
 	appInfo.appName = GameTitles[randomTitle];
@@ -73,7 +73,7 @@ void GolfPhysScene::addActor(PhysObject* actor)
 
 void GolfPhysScene::removeActor(PhysObject* actor)
 {
-	int actorCount = PhysActors.size() - 1;
+	int actorCount = (int)PhysActors.size() - 1;
 	for (int i = 0; i <= actorCount; i++)
 	{
 		if (PhysActors[i] == actor)
@@ -100,7 +100,7 @@ void GolfPhysScene::Update(float delta)
 		}
 		accumaltedTime -= TimeStep;
 
-		int actorCount = PhysActors.size();
+		int actorCount = (int)PhysActors.size();
 
 		// Iterate through all physics actors, check and resolve any collisions.
 		for (int outer = 0; outer < actorCount - 1; outer++)
@@ -118,7 +118,7 @@ void GolfPhysScene::Update(float delta)
 				{
 					collisionFunctionPtr(actorA, actorB);
 				}
-				actorCount = PhysActors.size();
+				actorCount = (int)PhysActors.size();
 			}
 		}
 		float windX = (rand() % (MaxWindForce + 1)) - (MaxWindForce / 2.0f);
@@ -139,7 +139,7 @@ void GolfPhysScene::Update(float delta)
 
 	lines->DrawText("WIND:", { 30, 16 }, 2.0f, Colour::GREEN);
 	lines->DrawText("+", { 31,2 }, 10);
-	lines->DrawLineWithArrow({ 36,10 }, ((WindSpeed / (MaxWindForce/10)) + Vec2{ 36, 10 }), Colour::GREEN, 1.0f);
+	lines->DrawLineWithArrow({ 36,10 }, ((WindSpeed / ((float)MaxWindForce/10.0f)) + Vec2{ 36, 10 }), Colour::GREEN, 1.0f);
 
 	TextStream Title(lines, Vec2{ -45.0f, 18.0f }, 4.0f);
 	Title << "Windy\nGolf";
@@ -149,7 +149,7 @@ void GolfPhysScene::Update(float delta)
 	Score << "Balls shot: " << BallTotal << "\nBalls sunk: " << GoalCount <<"\nBalls in play: " << BallCount << "\n\nCombo: " << CurrentCombo << "\nBest Combo: " << TopCombo;
 	lines->DrawCircle({ 35, -3 }, selectRadius, selectColour);
 	TextStream BallSelect(lines, { 28, 0 }, 1.0f);
-	BallSelect << "Selected Ball:\n\n\n\Size: "<<selectRadius<<"\nMass: "<<selectMass<<"\nBounce: "<<selectElastic;
+	BallSelect << "Selected Ball:\n\n\nSize: " << selectRadius << "\nMass: " << selectMass << "\nBounce: " << selectElastic;
 
 
 	// Aiming visual
@@ -218,7 +218,7 @@ void GolfPhysScene::OnRightClick() // Cycle Ball types
 		}
 		case 5: // Random Ball
 		{
-			selectMass = rand() % 100;
+			selectMass = float(rand() % 100);
 			selectRadius = 0.05f + (rand() % 100) / static_cast<float>(50);
 			selectElastic = (rand() % 100) / static_cast<float>(100);
 			selectColour = Colour::YELLOW;
