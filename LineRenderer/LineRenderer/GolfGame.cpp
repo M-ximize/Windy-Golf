@@ -11,9 +11,10 @@ typedef bool(*fn)(PhysObject*, PhysObject*);
 
 static fn collisionFunctionArray[] =
 {
-	GolfPhysScene::planeToPlane, GolfPhysScene::planeToCircle, GolfPhysScene::planeToGoalBox,
-	GolfPhysScene::circleToPlane, GolfPhysScene::circleToCircle, GolfPhysScene::circleToGoalBox,
-	GolfPhysScene::GoalBoxToPlane,GolfPhysScene::GoalBoxToCircle,GolfPhysScene::GoalBoxToGoalBox
+	GolfPhysScene::planeToPlane, GolfPhysScene::planeToCircle, GolfPhysScene::planeToGoalBox, GolfPhysScene::planeToBox,
+	GolfPhysScene::circleToPlane, GolfPhysScene::circleToCircle, GolfPhysScene::circleToGoalBox, GolfPhysScene::circleToBox,
+	GolfPhysScene::GoalBoxToPlane,GolfPhysScene::GoalBoxToCircle,GolfPhysScene::GoalBoxToGoalBox, GolfPhysScene::goalBoxToBox,
+	GolfPhysScene::boxToPlane, GolfPhysScene::boxToCircle, GolfPhysScene::boxToGoalBox, GolfPhysScene::boxToBox
 };
 
 
@@ -30,7 +31,7 @@ GolfPhysScene::GolfPhysScene()
 	appInfo.grid.unit = 5;
 	appInfo.grid.showBasisLines = false;
 	TimeStep = 0.01f;
-	Gravity = 1.0f;
+	Gravity = 0.0f;
 	appInfo.camera.disable = true;
 	
 }
@@ -112,7 +113,7 @@ void GolfPhysScene::Update(float delta)
 				int actorAID = actorA->getShapeType();
 				int actorBID = actorB->getShapeType();
 
-				int functionIdx = (actorAID * 3) + actorBID;
+				int functionIdx = (actorAID * 4) + actorBID;
 				fn collisionFunctionPtr = collisionFunctionArray[functionIdx];
 				if (collisionFunctionPtr != nullptr)
 				{
@@ -168,6 +169,8 @@ void GolfPhysScene::draw()
 	}
 }
 
+#pragma region Controls
+
 // Shoot ball
 void GolfPhysScene::OnLeftRelease()
 {
@@ -210,7 +213,7 @@ void GolfPhysScene::OnRightClick() // Cycle Ball types
 		}
 		case 4: // Unbouncy Ball
 		{
-			selectMass = 0.01f;
+			selectMass = 1.0f;
 			selectRadius = 0.3f;
 			selectElastic = -0.7f;
 			selectColour = Colour::MAGENTA;
@@ -276,7 +279,9 @@ void GolfPhysScene::OnMouseScroll(bool positive)
 	}
 }
 
-// Shape Collisions
+#pragma endregion
+
+#pragma region ShapeCollision
 
 bool GolfPhysScene::circleToCircle(PhysObject* actorA, PhysObject* actorB)
 {
@@ -345,6 +350,95 @@ bool GolfPhysScene::circleToGoalBox(PhysObject* actorA, PhysObject* actorB)
 	return false;
 }
 
+bool GolfPhysScene::boxToCircle(PhysObject* actorA, PhysObject* actorB)
+{
+	Box* box = dynamic_cast<Box*>(actorA);
+	Circle* circle = dynamic_cast<Circle*>(actorB);
+
+	if (box != nullptr && circle != nullptr)
+	{
+		// convert circle into the box space instead of world
+		Vec2 circlePosWorld = circle->getPosition() - box->getPosition(); // Difference between the circle and the box in the world.
+		Vec2 circlePosBox = Vec2(Dot(circlePosWorld, box->getlocalX()), 
+			Dot(circlePosWorld, box->getlocalY()));
+
+		// closest point of circle centre on the box
+		Vec2 closestPointOnBox = circlePosBox;
+		Vec2 extents = box->getExtents();
+		if (closestPointOnBox.x < -extents.x) closestPointOnBox.x = -extents.x;
+		if (closestPointOnBox.x > extents.x) closestPointOnBox.x = extents.x;
+		if (closestPointOnBox.y < -extents.y) closestPointOnBox.y = -extents.y;
+		if (closestPointOnBox.y > extents.y) closestPointOnBox.y = extents.y;
+
+		// convert back to world
+		Vec2 closestPointOnBoxWorld = box->getPosition() + 
+			closestPointOnBox.x * box->getlocalX() + 
+			closestPointOnBox.y * box->getlocalY();
+		Vec2 circleToBox = circle->getPosition() - closestPointOnBoxWorld;
+
+		if (glm::length(glm::vec2{ circleToBox.x, circleToBox.y }) < circle->getRadius())
+		{
+			glm::vec2 GLMdirection = glm::normalize(glm::vec2{ circleToBox.x, circleToBox.y });
+			Vec2 direction = { GLMdirection.x, GLMdirection.y };
+			Vec2 contact = closestPointOnBoxWorld;
+			box->resolveCollision(circle, contact, &direction);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GolfPhysScene::circleToBox(PhysObject* actorA, PhysObject* actorB)
+{
+	return boxToCircle(actorB, actorA);
+}
+
+bool GolfPhysScene::boxToGoalBox(PhysObject* actorA, PhysObject* actorB)
+{
+	Box* box = dynamic_cast<Box*>(actorA);
+	GoalBox* goal = dynamic_cast<GoalBox*>(actorB);
+
+	if (box != nullptr && goal != nullptr)
+	{
+		// convert circle into the box space instead of world
+		Vec2 circlePosWorld = goal->getPosition() - box->getPosition(); // Difference between the circle and the box in the world.
+		Vec2 circlePosBox = Vec2(Dot(circlePosWorld, box->getlocalX()),
+			Dot(circlePosWorld, box->getlocalY()));
+
+		// closest point of circle centre on the box
+		Vec2 closestPointOnBox = circlePosBox;
+		Vec2 extents = box->getExtents();
+		if (closestPointOnBox.x < -extents.x) closestPointOnBox.x = -extents.x;
+		if (closestPointOnBox.x > extents.x) closestPointOnBox.x = extents.x;
+		if (closestPointOnBox.y < -extents.y) closestPointOnBox.y = -extents.y;
+		if (closestPointOnBox.y > extents.y) closestPointOnBox.y = extents.y;
+
+		// convert back to world
+		Vec2 closestPointOnBoxWorld = box->getPosition() +
+			closestPointOnBox.x * box->getlocalX() +
+			closestPointOnBox.y * box->getlocalY();
+		Vec2 circleToBox = goal->getPosition() - closestPointOnBoxWorld;
+
+		if (glm::length(glm::vec2{ circleToBox.x, circleToBox.y }) < 4.0f)
+		{
+			glm::vec2 GLMdirection = glm::normalize(glm::vec2{ circleToBox.x, circleToBox.y });
+			Vec2 direction = { GLMdirection.x, GLMdirection.y };
+			Vec2 contact = closestPointOnBoxWorld;
+			GolfPhysScene* scene = goal->getScene();
+			scene->removeActor(box);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GolfPhysScene::goalBoxToBox(PhysObject* actorA, PhysObject* actorB)
+{
+	return false;
+}
+
+#pragma endregion
+
 void GolfPhysScene::CreateGoal()
 {
 	// Set a random wind speed
@@ -361,6 +455,18 @@ void GolfPhysScene::CreateGoal()
 	GoalBox* box;
 	box = new GoalBox(GoalPos, this);
 	addActor(box);
+	
+}
+
+void GolfPhysScene::CreateBox()
+{
+	Box* StaticBox;
+
+	float boxX = ((rand() % 490) - 240) / static_cast<float>(10);
+	float boxY = ((rand() % 490) - 240) / static_cast<float>(10);
+
+	StaticBox = new Box({ boxX, boxY }, 1);
+	addActor(StaticBox);
 }
 
 void GolfPhysScene::ScoreGoal(PhysObject* box, PhysObject* Ball)
@@ -368,6 +474,11 @@ void GolfPhysScene::ScoreGoal(PhysObject* box, PhysObject* Ball)
 	// remove and delete the current goal and the instigating ball. Then create a new goal and add 1 to players score.
 	removeActor(box);
 	removeActor(Ball);
+
+	// Set a new random goal position
+	
+	CreateBox();
+
 	CreateGoal();
 	GoalCount++;
 	BallCount--;

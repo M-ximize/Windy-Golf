@@ -53,14 +53,41 @@
     <ClCompile Include="TextStream.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="GolfGame.cpp">
-      <Filter>Game\Experiments</Filter>
+    <ClCompile Include="Goalbox.cpp">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
     </ClCompile>
-    <ClCompile Include="PhysActor.cpp">
-      <Filter>Game\Experiments</Filter>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="GolfGame.cpp">
+      <Filter>Game\Experiments\WindyGolf</Filter>
     </ClCompile>
     <ClCompile Include="Grid.cpp">
-      <Filter>Game\Experiments</Filter>
+      <Filter>Game\Experiments\WindyGolf</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysActor.cpp">
+      <Filter>Game\Experiments\WindyGolf</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerGame.cpp">
+      <Filter>Game\Experiments\TowerThing</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerTower.cpp">
+      <Filter>Game\Experiments\TowerThing</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerGun.cpp">
+      <Filter>Game\Experiments\TowerThing\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="TowerWeapon.cpp">
+      <Filter>Game\Experiments\TowerThing\Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Game\Experiments\TowerThing\Enemies</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,17 +166,44 @@
     <ClInclude Include="Key.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="GolfGame.h">
-      <Filter>Game\Experiments</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image.h">
       <Filter>ThirdParty</Filter>
     </ClInclude>
-    <ClInclude Include="PhysActor.h">
-      <Filter>Game\Experiments</Filter>
+    <ClInclude Include="Goalbox.h">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Game\Experiments\WindyGolf\ShapeClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="GolfGame.h">
+      <Filter>Game\Experiments\WindyGolf</Filter>
     </ClInclude>
     <ClInclude Include="Grid.h">
-      <Filter>Game\Experiments</Filter>
+      <Filter>Game\Experiments\WindyGolf</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysActor.h">
+      <Filter>Game\Experiments\WindyGolf</Filter>
+    </ClInclude>
+    <ClInclude Include="TowerGame.h">
+      <Filter>Game\Experiments\TowerThing</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerTower.h">
+      <Filter>Game\Experiments\TowerThing</Filter>
+    </ClInclude>
+    <ClInclude Include="TowerWeapon.h">
+      <Filter>Game\Experiments\TowerThing\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="TowerGun.h">
+      <Filter>Game\Experiments\TowerThing\Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Game\Experiments\TowerThing\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -171,5 +225,23 @@
     <Filter Include="Game\Experiments">
       <UniqueIdentifier>{a52d1c62-720e-4e41-b667-d4e5517a49d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Experiments\WindyGolf">
+      <UniqueIdentifier>{2f5f458d-fca8-49e3-b01d-86d7d0dfc0c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Experiments\WindyGolf\ShapeClasses">
+      <UniqueIdentifier>{bc7238d1-7f83-49e2-adad-aa8fa6b4a8a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Experiments\TowerThing">
+      <UniqueIdentifier>{bbaa88ec-7a8d-438a-ae9a-fd9b982525d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Experiments\TowerThing\Weapons">
+      <UniqueIdentifier>{3e473b13-9ca2-4827-8379-51cf46b4c6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Experiments\TowerThing\Enemies">
+      <UniqueIdentifier>{b3281582-4c7b-40fd-9d1a-c91041cdae20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

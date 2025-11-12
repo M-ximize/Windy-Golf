@@ -1,11 +1,17 @@
 #pragma once
 
 #include <vector>
+#include "glm/glm.hpp"
 
 #include "Application.h"
 #include "Maths.h"
 #include "Grid.h"
 #include "PhysActor.h"
+
+#include "Plane.h"
+#include "Sphere.h"
+#include "Goalbox.h"
+#include "Box.h"
 
 class GolfPhysScene : public Application
 {
@@ -27,8 +33,8 @@ private:
 
 	// Game variables
 	float WallBounce = 0.7f; // Elasticity of map bounds
-	int MaxWindForce = 20; // Max possible acceleration of wind
-	float windDivider = 100; // For wind updates
+	int MaxWindForce = 150; // Max possible acceleration of wind
+	float windDivider = MaxWindForce*5; // For wind updates
 	bool DebugState = false; // Toggle accel display on balls
 	Vec2 GoalPos;
 	Vec2 WindSpeed;
@@ -74,10 +80,19 @@ public:
 	static bool circleToGoalBox(PhysObject*, PhysObject*);
 	static bool GoalBoxToPlane(PhysObject*, PhysObject*) { return false; }
 	static bool planeToGoalBox(PhysObject*, PhysObject*) { return false; }
+	static bool boxToBox(PhysObject*, PhysObject*) { return false; }
+	static bool planeToBox(PhysObject*, PhysObject*) { return false; }
+	static bool boxToPlane(PhysObject*, PhysObject*) { return false; }
+	static bool boxToCircle(PhysObject*, PhysObject*);
+	static bool circleToBox(PhysObject*, PhysObject*);
+	static bool boxToGoalBox(PhysObject*, PhysObject*);
+	static bool goalBoxToBox(PhysObject*, PhysObject*);
 
 	// Game Functions
 
 	void CreateGoal();
+
+	void CreateBox();
 
 	void ScoreGoal(PhysObject* GoalBox, PhysObject* Ball);
 

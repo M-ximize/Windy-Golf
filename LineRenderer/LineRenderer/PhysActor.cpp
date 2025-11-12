@@ -1,7 +1,9 @@
 #include "PhysActor.h"
 #include "LineRenderer.h"
+#include "Goalbox.h"
+#include "Plane.h"
 
-
+#include "iostream"
 
 Rigidbody::Rigidbody(ShapeType _shapeType, Vec2 _position, Vec2 _velocity, float _orientation, float _mass, float _elasticity)
 {
@@ -30,7 +32,8 @@ void Rigidbody::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
 	}*/
 
 	m_position += m_velocity * _timeStep;
-	applyForce(_force * m_mass * _timeStep, { 0,0 });
+	applyForce(_force * _timeStep, { 0,0 });
+	
 
 	//m_orientation += m_angularVelocity * _timeStep;
 }
@@ -65,104 +68,4 @@ void Rigidbody::resolveCollision(Rigidbody* _otherActor, Vec2 _contact, Vec2* _c
 		applyForce(-force, _contact - m_position);
 		_otherActor->applyForce(force, _contact - _otherActor->m_position);
 	}
-}
-
-
-// Circle Functions
-
-Circle::Circle(Vec2 _position, Vec2 _velocity, float _mass, float _radius, float _elasticity, Colour _colour) :
-	Rigidbody(CIRCLE, _position, _velocity, 0, _mass, _elasticity)
-{
-	m_mass = _mass;
-	m_radius = _radius;
-	m_elasticity = _elasticity;
-	m_moment = 0.5f * m_mass * m_radius * m_radius;
-	m_colour = _colour;
-}
-
-Circle::~Circle()
-{
-}
-
-void Circle::Draw(LineRenderer* lines) const
-{
-	lines->DrawCircle(m_position, m_radius, m_colour);
-
-	if (debug)
-	{
-		lines->DrawLineSegment(m_position, m_position + m_velocity, m_colour);
-	}
-
-	if (m_velocity.x > 50.0f || m_velocity.x < -50.0f || m_velocity.y > 50.0f || m_velocity.y < -50.0f)
-	{
-		lines->DrawCircle(m_position-(m_velocity/75), m_radius/1.4f, Colour::YELLOW);
-		lines->DrawCircle(m_position-(m_velocity/150), m_radius / 1.1f, Colour::ORANGE);
-		lines->DrawCircle(m_position, m_radius + 0.1f, Colour::RED);
-	}
-}
-
-
-// Plane Functions
-
-Plane::Plane(Vec2 _normal, float _distance, float _elasticity) : PhysObject(ShapeType::PLANE, _elasticity)
-{
-	m_normal = _normal;
-	m_distanceToOrigin = _distance;
-	m_elasticity = _elasticity;
-}
-
-void Plane::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
-{
-}
-
-void Plane::Draw(LineRenderer* lines) const
-{
-	float planeLength = 25;
-	Vec2 centerPoint = m_normal * m_distanceToOrigin;
-	Vec2 parallel(m_normal.y, -m_normal.x);
-	lines->DrawLineSegment({ centerPoint + (parallel * planeLength) }, { centerPoint - (parallel * planeLength) }, Colour::GREEN.Lighten());
-}
-
-void Plane::resetPosition()
-{
-}
-
-void Plane::resolveCollision(Rigidbody* _otherActor, Vec2 _contact)
-{
-	Vec2 localContact = _contact - _otherActor->getPosition();
-	Vec2 vRel = _otherActor->getVelocity() + _otherActor->getAngularVelocity() * Vec2(-localContact.y, localContact.x);
-	float velIntoPlane = Dot(vRel, m_normal);
-
-	float elasticity = (getElasticity() + _otherActor->getElasticity()) / 2.0f;
-	float j = Dot(-(1 + elasticity) * (vRel), m_normal) / (1 / _otherActor->getMass());
-
-	Vec2 force = m_normal * j;
-
-	_otherActor->applyForce(force, _contact - _otherActor->getPosition());
-}
-
-// GoalBox Functions
-
-GoalBox::GoalBox(Vec2 _position, GolfPhysScene* _scene) : PhysObject(ShapeType::GOALBOX)
-{
-	m_position = _position;
-	sceneRef = _scene;
-}
-
-void GoalBox::fixedUpdate(Vec2 _force, float _gravity, float _timeStep)
-{
-}
-
-void GoalBox::Draw(LineRenderer* lines) const
-{
-	lines->AddPointToLine({ m_position.x - GoalBoxSize, m_position.y + GoalBoxSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x + GoalBoxSize, m_position.y + GoalBoxSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x + GoalBoxSize, m_position.y - GoalBoxSize }, Colour::WHITE);
-	lines->AddPointToLine({ m_position.x - GoalBoxSize, m_position.y - GoalBoxSize }, Colour::WHITE);
-	lines->FinishLineLoop();
-	lines->DrawCross(m_position, GoalBoxSize);
-}
-
-void GoalBox::resetPosition()
-{
 }
